@@ -23,35 +23,18 @@ class VendingMachine: # No need for ABC yet, let's keep it concrete
             print(f"SUCCESS: Dispensing {self._product_name}...")
             print(f"Returning change: ${change}")
             return True
-        elif self._inventory_count == 0 :
-            if 
-            print("Supply is Out of stock")
-
-            return True
-
-
+        elif self._inventory_count == 0:
+            amount_return = self._balance
+            print(f"Sorry inventory is empty")
+            print(f"Here is your Money : {amount_return}")
+            return False
         else:
             needed = self._price - self._balance
             print(f"FAILURE: Insufficient funds. Please insert ${needed} more.")
             return False
-class soft_drinks(VendingMachine):
-    def __init__(self,product,product_cost,balance,coin):
-        super().__init__(product,product_cost,balance,coin)
 
-    def productdescription(self, name, cost):
-        return super().productdescription(name, cost)
-class Coffee(VendingMachine):
-    def __init__(self,product,product_cost,balance,coin):
-        super().__init__(product,product_cost,balance,coin)
-
-    def productdescription(self, name, cost):
-        return super().productdescription(name, cost)
     
-class Juice(VendingMachine):
-    def productdescription(self, name, cost):
-        return super().productdescription(name, cost)
     
-
     
 
     

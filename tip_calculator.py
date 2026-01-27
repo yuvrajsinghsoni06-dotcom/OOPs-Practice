@@ -3,30 +3,32 @@ class TipCalculator:
         self.total_bill = total_bill
         self.tip_percentage = tip_percentage
         self.num_people = num_people
+        self.final_amount = 0
 
     def calculate_tip(self):
-        # Calculate tip and update the total bill
         tip_amount = self.total_bill * (self.tip_percentage / 100)
-        self.total_bill += tip_amount
-        return f" Total bill with tip: ${self.total_bill:.2f}"
+        self.final_amount = self.total_bill + tip_amount
+        return f"Total bill with tip: ${self.final_amount:.2f}"
 
     def split_bill(self, requests):
+        if self.num_people <=0:
+            return f" Cannot split bill among zero or negative people."
+        amount_to_split = self.final_amount if self.final_amount > 0 else self.total_bill
         if requests == "yes":
-            amount_per_person = self.total_bill / self.num_people
-            return f" Per person amount: ${amount_per_person:.2f}"
+            amount_per_person = self.final_amount / self.num_people
+            return f"Per person amount: ${amount_per_person:.2f}"
         else:
-            return f" Total amount: ${self.total_bill:.2f}"
-
+            return f"Total amount: ${amount_to_split:.2f}"
     def __str__(self):
-        # This triggers the input when you try to 'print' the object
-        return self.split_bill(input("Do you want to split the bill ? Type 'yes' or 'no': "))
+        current_total = self.final_amount if self.final_amount > 0 else self.total_bill
+        return f"Bill Summary: ${current_total:.2f} split among {self.num_people} people."
+person1 = TipCalculator(1500.90, 23, 5)
 
-if __name__ == "__main__":
-    print("=== Tip Calculator ===")
-    bill_amount = float(input("What was the total bill? $"))
-    tip_percent = int(input("What percentage tip would you like to give? 10, 12, or 15? "))
-    num_people = int(input("How many people to split the bill? "))
-    
-    calculator = TipCalculator(bill_amount, tip_percent, num_people)
-    calculator.calculate_tip() 
-    print(calculator)
+
+print(person1.calculate_tip()) 
+
+
+print(person1.split_bill("yes"))
+
+
+print(person1)

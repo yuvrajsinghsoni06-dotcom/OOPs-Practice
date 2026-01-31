@@ -34,7 +34,10 @@ class TipCalculator:
             # Store the calculated tip amount so we can access it later
             self.tip_amount_val = self.total_bill * (self.input_tip / 100)
             self.final_amount = self.total_bill + self.tip_amount_val
-        return f"Bill with tip: ${self.final_amount:.2f}"
+            return f"Bill with tip: ${self.final_amount:.2f}"
+        
+        # [FIX] Added a return for when they say "no" so it doesn't return None
+        return f"Bill without tip: ${self.final_amount:.2f}"
 
     def special_offer(self):
         if self.total_bill > 2000:
@@ -42,7 +45,7 @@ class TipCalculator:
             self.final_amount -= discount
             return f"Loyalty Discount Applied: -${discount:.2f}"
         else:
-          return f"No discount applicable."
+            return f"No discount applicable."
 
     def split_bill(self, split_request="yes"):
         if self.num_people <= 0:
@@ -52,57 +55,83 @@ class TipCalculator:
             return f"Per person: ${amount_per:.2f}"
         return f"Total: ${self.final_amount:.2f}"
 
+    def to_pay(self):
+        return f"Final Bill to pay : {self.final_amount:.2f}"
+
+    def complementary_gift(self):
+        # [FIX] Reordered logic: Check the higher value (500) FIRST.
+        # If we checked >= 100 first, 600 would get stuck there.
+        if self.tip_amount_val > 500:
+             # [FIX] Corrected typo: 'tip_amount_value' -> 'tip_amount_val'
+            return "Chance to participate in lucky Draw and have a chance for yourself to make today's meal on the House"
+        elif self.tip_amount_val >= 100:
+            return "A Special Sweet dish"
+        else:
+            return "Thank you for visiting!"
 
 def main():
     # --- 1. Initialize Shift Stats ---
     total_volume = 0.0
     total_tips_collected = 0.0
-    customer_served = 0
+    
+    # [FIX] Renamed accumulator to avoid confusion with loop input
+    total_customers_served_shift = 0 
 
     print("--- Shift Started ---")
 
     while True:
-        user = input("\nEnter bill amount (or 'exit' to finish): ")
+        user_bill = input("\nEnter bill amount (or 'exit' to finish): ")
         
-        # --- Fix 1: Correct Exit Logic ---
-        if user.lower() in ["exit", "q"]:
+        # [FIX] Check exit BEFORE asking for number of people
+        if user_bill.lower() in ["exit", "q"]:
             break
+
+        # [FIX] Use a distinct variable name for the input
+        people_input = input("Enter No of people dining: ")
         
         try:
-            bill_amount = float(user)
+            bill_amount = float(user_bill)
             
-            # --- Fix 3: Instantiate and Use the Class ---
+            # [FIX] Convert people input to int immediately
+            total_people_table = int(people_input)
+            
             # 1. Create the object
-            my_calc = TipCalculator(bill_amount,1)  # Default to 1 person for simplicity
+            my_calc = TipCalculator(bill_amount, total_people_table)
             
-            # 2. Run the logic (simulating a quick flow for the loop)
-            # You can ask for rating/people here if you want, 
-            # but for now let's just assume standard flow:
+            # 2. Rate service
+            rating_input = input("Rate service (1-Poor, 2-Good, 3-Excellent): ")
+            if rating_input.isdigit():
+                print(my_calc.get_service_recommendation(int(rating_input)))
+            else:
+                print("Invalid rating, skipping suggestion.")
             
-            # Rate service
-            print(my_calc.get_service_recommendation(input("Rate service (1-Poor, 2-Good, 3-Excellent): "))) 
+            # 3. Calculate Tip
+            # [FIX] Removed int() casting. input() returns a string, which calculate_tip expects.
+            tip_response = input("Would you like to add a tip? (yes/no): ").lower()
+            print(my_calc.calculate_tip(tip_response))
             
-            # Calculate Tip
-            print(my_calc.calculate_tip(input("Would you like to add a tip? (yes/no): ").lower()))
-            
-            # Check Special Offer
+            # 4. Check Special Offer & Pay
             print(my_calc.special_offer())
+            print(my_calc.to_pay())
+            print(my_calc.split_bill())
+            print(my_calc.complementary_gift())
             
-            # --- Update Stats (The Bonus) ---
-            # We add this specific customer's data to the shift totals
+            # --- Update Stats ---
             total_volume += bill_amount
             total_tips_collected += my_calc.tip_amount_val
-            customer_served += 1
+            
+            # [FIX] Accumulate correctly using the separate variables
+            total_customers_served_shift += total_people_table
             
         except ValueError:
-            print("Invalid input! Please enter a number.")
+            print("Invalid input! Please enter a valid number.")
             continue
 
     # --- End of Shift Report ---
     print("\n" + "="*30)
     print("       SHIFT REPORT       ")
     print("="*30)
-    print(f"Total Customers: {customer_served}")
+    print(f"Total Customers: {total_customers_served_shift}")
     print(f"Total Volume:    ${total_volume:.2f}")
     print(f"Total Tips:      ${total_tips_collected:.2f}")
     

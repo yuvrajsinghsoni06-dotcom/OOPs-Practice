@@ -1,0 +1,56 @@
+[
+  {
+    "order_id": 101,
+    "product": "Laptop",
+    "category": "Electronics",
+    "price": 55000,
+    "quantity": 1,
+    "city": "Gurugram",
+    "payment_online": true
+  },
+  {
+    "order_id": 102,
+    "product": "Headphones",
+    "category": "Accessories",
+    "price": 2500,
+    "quantity": 3,
+    "city": "Delhi",
+    "payment_online": true
+  },
+  {
+    "order_id": 103,
+    "product": "Office Chair",
+    "category": "Furniture",
+    "price": 8000,
+    "quantity": 2,
+    "city": "Gurugram",
+    "payment_online": false
+  },
+  {
+    "order_id": 104,
+    "product": "Monitor",
+    "category": "Electronics",
+    "price": 12000,
+    "quantity": 1,
+    "city": "Noida",
+    "payment_online": true
+  },
+  {
+    "order_id": 105,
+    "product": "Keyboard",
+    "category": "Accessories",
+    "price": 1500,
+    "quantity": 5,
+    "city": "Delhi",
+    "payment_online": false
+  },
+  {
+    "order_id": 106,
+    "product": "Laptop",
+    "category": "Electronics",
+    "price": 55000,
+    "quantity": 1,
+    "city": "Bangalore",
+    "payment_online": true
+  }
+]

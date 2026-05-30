@@ -1,10 +1,9 @@
 class TipCalculator:
-    def __init__(self, total_bill, num_people):
+    def __init__(self, total_bill: float, num_people: int):
         self.total_bill = total_bill
         self.num_people = num_people
         self.final_amount = total_bill 
         self.suggested_tip_percent = 0 
-        self.input_tip = 0
         self.tip_amount_val = 0
 
     def get_service_recommendation(self, rating):
@@ -21,23 +20,10 @@ class TipCalculator:
             self.suggested_tip_percent = 0
             return "We Apologize for our Service."
 
-    def calculate_tip(self, apply_tip):
-        if apply_tip == "yes":
-            while True:
-                try:
-                    user_input = input(f"Enter tip percentage (suggested {self.suggested_tip_percent}%): ")
-                    self.input_tip = float(user_input)  
-                    break  
-                except ValueError:
-                    print("Invalid input! Please enter a number.")
-            
-            # Store the calculated tip amount so we can access it later
-            self.tip_amount_val = self.total_bill * (self.input_tip / 100)
+    def calculate_tip(self,tip_percentage: float):
+            self.tip_amount_val = self.total_bill * (tip_percentage / 100)
             self.final_amount = self.total_bill + self.tip_amount_val
             return f"Bill with tip: ${self.final_amount:.2f}"
-        
-        # [FIX] Added a return for when they say "no" so it doesn't return None
-        return f"Bill without tip: ${self.final_amount:.2f}"
 
     def special_offer(self):
         if self.total_bill > 2000:
@@ -47,13 +33,14 @@ class TipCalculator:
         else:
             return f"No discount applicable."
 
-    def split_bill(self, split_request="yes"):
+    def split_bill(self, split_response: str):
         if self.num_people <= 0:
             return "Error: Cannot split by zero."
-        if split_request == "yes":
+        if split_response == "yes":
             amount_per = self.final_amount / self.num_people
             return f"Per person: ${amount_per:.2f}"
         return f"Total: ${self.final_amount:.2f}"
+    
 
     def to_pay(self):
         return f"Final Bill to pay : {self.final_amount:.2f}"
@@ -81,8 +68,14 @@ def main():
 
     while True:
         user_bill = input("\nEnter bill amount (or 'exit' to finish): ")
-        
+        user_input = input("Enter Tip % :  ")
+        split_response = input("Split the bill? (yes/no): ").lower()
         # [FIX] Check exit BEFORE asking for number of people
+        try:
+            tip_val =float(user_input)
+        except ValueError:
+            print("Invalid tip percentage! Please enter a valid number.")
+            continue
         if user_bill.lower() in ["exit", "q"]:
             break
 
@@ -106,13 +99,12 @@ def main():
                 print("Invalid rating, skipping suggestion.")
             
             # 3. Calculate Tip
-            # [FIX] Removed int() casting. input() returns a string, which calculate_tip expects.
-            tip_response = input("Would you like to add a tip? (yes/no): ").lower()
-            print(my_calc.calculate_tip(tip_response))
+            print(my_calc.calculate_tip(tip_val))
             
             # 4. Check Special Offer & Pay
             print(my_calc.special_offer())
             print(my_calc.to_pay())
+
             print(my_calc.split_bill())
             print(my_calc.complementary_gift())
             
